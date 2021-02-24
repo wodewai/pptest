@@ -1,0 +1,54 @@
+<div id="dropin-container"></div>
+<p></p>
+<button type="button" class="btn btn-lg btn-block btn-warning">Submit Payment</button>
+
+<script>
+    var button = document.querySelector('#submit-button');
+
+    braintree.dropin.create({
+        authorization: 'sandbox_386h7pbg_h5kcsk68tq98pfwt',
+        container: '#dropin-container',
+
+        paypal: {
+            flow: 'vault'
+        },
+
+        applePay: {
+            displayName: 'My Store',
+            paymentRequest: {
+                total: {
+                    label: 'My Store',
+                    amount: '19.99'
+                },
+                requiredBillingContactFields: ["postalAddress"]
+            }
+        },
+
+        googlePay: {
+            googlePayVersion: 2,
+            merchantId: 'merchant-id-from-google',
+            transactionInfo: {
+                totalPriceStatus: 'FINAL',
+                totalPrice: '123.45',
+                currencyCode: 'USD'
+            },
+            allowedPaymentMethods: [{
+                type: 'CARD',
+                parameters: {
+                    // We recommend collecting and passing billing address information with all Google Pay transactions as a best practice.
+                    billingAddressRequired: true,
+                    billingAddressParameters: {
+                        format: 'FULL'
+                    }
+                }
+            }]
+        }
+
+    }, function (createErr, instance) {
+        button.addEventListener('click', function () {
+            instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+            // Submit payload.nonce to your server
+            });
+        });
+    });
+</script>
